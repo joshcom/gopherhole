@@ -1,0 +1,9 @@
+{
+	"RootDirectory": "testdata/mygopherhole",
+	"Host": "joshcom.net",
+	"Port": 70,
+	"MaxConnections": 5,
+	"LogFile": "/var/gopherhole/logs/test.log",
+	"IdleTimeout": 30,
+	"MimeTypeIgnoreList": ["application/", "text/html"]
+}

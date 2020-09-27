@@ -1,0 +1,43 @@
+package gopherhole
+
+import (
+	"bytes"
+)
+
+type mapfilePayload struct {
+	*payloadImpl
+}
+
+func newMapfilePayload(host string, port int, rootdir string) *mapfilePayload {
+	p := mapfilePayload{
+		&payloadImpl{
+			host:          host,
+			port:          port,
+			rootDirectory: rootdir,
+		},
+	}
+
+	return &p
+}
+
+func (f *mapfilePayload) build(r *resource) (res *[]byte, err error) {
+	fileData, err := r.readFileData()
+	if err != nil {
+		return
+	}
+
+	lines := bytes.Split(*fileData, []byte{LF_CHAR})
+	var newLines []byte
+	for _, line := range lines {
+		line := line
+		if !f.isEntityRow(&line) {
+			line = *f.buildInlineTextEntityRow(line)
+		} else {
+			line = append(line, LF_CHAR)
+		}
+		newLines = append(newLines, line...)
+	}
+
+	res = f.pack(&newLines)
+	return
+}

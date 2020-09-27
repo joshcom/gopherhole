@@ -1,0 +1,24 @@
+joshcom.net - Coding on a long weekend
+[===================================================================]
+     __________________
+    |  ______________  |  Plenty of gopher server software already 
+    | |              | |  exists (currently, this gopherhole uses
+    | | $ vim        | |  pygopherd), but as part of my effort to
+    | |              | |  become proficient in golang, as well as my
+    | |______________| |  general desire to use  my own software  
+    |_~______________~_|  when I can, I started building my own 
+    / ..............   /  gopher server this morning.
+   /  = = = = = = =   /
+  /  = = = = = = =   /  I think this'll be a fairly quick project.
+ / #   _______   #  /  The serverside of the protocol, at least what
+/_____/______/_____/  I'm seeing in RFC-1436, looks simple enough.
+                     Perhaps I should write a client as well...
+
+I'm also realizing that, especially by hosting my own gopherhole
+where I don't _think_ crawlers and aggregators can find me, visitors
+are unlikely.  I've caught a few IPs I don't recognize, but overall, 
+I may be an undetectable rogue planet floating around the internet.
+
+[===================================================================]
+Sat 19 Sep 2020 03:06:30 PM CDT - 20200919-Coding-on-a-long-weekend.phlog
+

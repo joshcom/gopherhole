@@ -1,0 +1,15 @@
+joshcom.net - About This Gopherhole
+[===================================================================]
+
+	    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	    |g|o|p|h|e|r|:|/|/|j|o|s|h|c|o|m|.|n|e|t|
+	    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+This gopherhole runs out of my home in Moorhead, MN, on a raspberry pi.
+Moorhead, MN, is a small city touching Fargo, ND.  My gopherhole and I
+will be moving to Tucson, AZ, in the next couple of months, just in 
+time to avoid another unbearable winter.
+
+You can contact me at joshcom@sdf.org.
+
+[===================================================================]
