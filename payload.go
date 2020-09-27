@@ -23,10 +23,11 @@ type payload interface {
 }
 
 type payloadImpl struct {
-	rootDirectory string
-	host          string
-	port          int
-	defaultMime   string
+	rootDirectory      string
+	host               string
+	port               int
+	defaultMime        string
+	mimeTypeIgnoreList []string
 }
 
 func (r *payloadImpl) build(resource *resource) (p *[]byte, err error) {

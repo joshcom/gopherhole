@@ -6,7 +6,6 @@ import (
 
 type directoryPayload struct {
 	*payloadImpl
-	mimeTypeIgnoreList []string
 }
 
 func newDirectoryPayload(host string,
@@ -17,12 +16,12 @@ func newDirectoryPayload(host string,
 
 	p := directoryPayload{
 		&payloadImpl{
-			host:          host,
-			port:          port,
-			rootDirectory: rootdir,
-			defaultMime:   defaultMime,
+			host:               host,
+			port:               port,
+			rootDirectory:      rootdir,
+			defaultMime:        defaultMime,
+			mimeTypeIgnoreList: mimeTypeIgnoreList,
 		},
-		mimeTypeIgnoreList,
 	}
 
 	return &p

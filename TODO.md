@@ -5,9 +5,7 @@
 2. Server: Better tests, better overall abstraction?
 3. Decorate incomplete lines of gophermap with default hostname and port.
 4. Review the period situation (https://tools.ietf.org/html/rfc1436)
-5. How do we handle file permissions?
-6. Make sure all file absolute paths are in root (and make an absolute path out of the provided root config).
-7. Do not directly serve files forbidden by map restrictions.
+5. Make sure all file absolute paths are in root (and make an absolute path out of the provided root config).
 
 ## Deployment
 * How to package this?

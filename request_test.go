@@ -89,7 +89,19 @@ func TestRequest_process(t *testing.T) {
 			t.Error("Invalid file should be handled without error.")
 		}
 		dataStr := string(*req.payload)
-		if strings.Index(dataStr, "3Requested resource not found.") < 0 {
+		if strings.Index(dataStr, "3File not found.") < 0 {
+			t.Error("Error payload not as expected.")
+		}
+	})
+
+	t.Run("restricted resource error", func(t *testing.T) {
+		req := newRequest("files/run.exe", config)
+		err := req.process()
+		if err != nil {
+			t.Error("Invalid file should be handled without error.")
+		}
+		dataStr := string(*req.payload)
+		if strings.Index(dataStr, "3File not found.") < 0 {
 			t.Error("Error payload not as expected.")
 		}
 	})

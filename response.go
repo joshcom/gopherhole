@@ -38,7 +38,7 @@ func (r *response) build(res *resource) (pay *[]byte, err error) {
 			)
 		}
 	} else {
-		p = newFilePayload()
+		p = newFilePayload(r.defaultMime, r.mimeTypeIgnoreList)
 	}
 
 	pay, err = p.build(&payloadRes)

@@ -20,6 +20,8 @@ func (r *request) process() (err error) {
 	fullPath, err := r.selector.path()
 	var res resource
 
+	// Errors at this state will be a problem
+	// with the selector query itself.
 	if err != nil {
 		res, _ = newQueryErrorResource(r.selector.query)
 	} else {
@@ -27,6 +29,13 @@ func (r *request) process() (err error) {
 	}
 
 	r.payload, err = r.getPayload(&res)
+
+	// Errors here mean the selector was constructed
+	// fine, but the file itself is forbidden.
+	if err != nil {
+		res, _ = newNotFoundErrorResource(r.selector.query)
+		r.payload, err = r.getPayload(&res)
+	}
 
 	return
 }

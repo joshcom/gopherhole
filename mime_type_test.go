@@ -113,6 +113,7 @@ func TestMime_in(t *testing.T) {
 			[]string{"text/plain"},
 			[]string{"text", "text/plain"},
 			[]string{"application/", "text/plain"},
+			[]string{},
 		}
 
 		for _, condition := range conditions {

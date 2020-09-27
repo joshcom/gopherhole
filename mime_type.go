@@ -29,7 +29,7 @@ func (m *mimeType) isNone() bool {
 }
 
 func (m *mimeType) in(matchers []string) bool {
-	if m.isNone() {
+	if m.isNone() || len(matchers) == 0 {
 		return false
 	}
 
