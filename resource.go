@@ -26,6 +26,17 @@ func newQueryErrorResource(query string) (res resource, err error) {
 	return
 }
 
+func newNotFoundErrorResource(query string) (res resource, err error) {
+	message := fmt.Sprintf("File not found. (%s)", query)
+	res = resource{
+		name:        message,
+		isDirectory: false,
+		isError:     true,
+	}
+
+	return
+}
+
 func newResource(absPath string) (res resource, err error) {
 	fileInfo, err := fileStatFromPath(absPath)
 
@@ -39,8 +50,8 @@ func newResource(absPath string) (res resource, err error) {
 		isDirectory = fileInfo.IsDir()
 		isError = false
 	} else {
+		name = "File not found."
 		isError = true
-		name = "Requested resource not found."
 	}
 
 	res = resource{

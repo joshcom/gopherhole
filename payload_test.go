@@ -119,9 +119,9 @@ func TestPayload_buildResourceEntityRow(t *testing.T) {
 		path := "testdata/mygopherhole/art/laptop2.txt"
 		res, _ := newResource(path)
 		row := payload.buildResourceEntityRow(&res)
-		expected := "3Requested resource not found.\t(NOTHING)\tnohost\t0\r\n"
+		expected := "3File not found.\t(NOTHING)\tnohost\t0\r\n"
 		if string(*row) != expected {
-			t.Errorf("Unexpcted row format: \n%s", row)
+			t.Errorf("Unexpected row format: \n%s", row)
 		}
 	})
 }

@@ -63,6 +63,16 @@ func TestResponse_build(t *testing.T) {
 		}
 	})
 
+	t.Run("do not process restricted file", func(t *testing.T) {
+		path := "testdata/mygopherhole/files/run.exe"
+		res, _ := newResource(path)
+		_, err := resp.build(&res)
+
+		if err == nil {
+			t.Error("Expected error on processing restricted file.")
+		}
+	})
+
 	t.Run("resource error", func(t *testing.T) {
 		path := "testdata/mygopherhole/art/iheartsocialmedia.txt"
 		res, _ := newResource(path)
@@ -72,7 +82,7 @@ func TestResponse_build(t *testing.T) {
 			t.Error("Invalid file should be handled without error.")
 		}
 		dataStr := string(*data)
-		if strings.Index(dataStr, "3Requested resource not found.") < 0 {
+		if strings.Index(dataStr, "3File not found.") < 0 {
 			t.Error("Error payload not as expected.")
 		}
 	})
