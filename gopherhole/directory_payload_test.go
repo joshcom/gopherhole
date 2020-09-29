@@ -100,24 +100,6 @@ func TestDirectoryPayload_build(t *testing.T) {
 		}
 	})
 
-	t.Run("build empty directory", func(t *testing.T) {
-		path := "testdata/mygopherhole/art/subdirectory"
-		resource, err := newResource(path)
-		if err != nil {
-			t.Fatalf("Unexpected error %v", err)
-		}
-
-		data, err := payload.build(&resource)
-		if err != nil {
-			t.Fatalf("Unexpected error %v", err)
-		}
-
-		dataStr := string(*data)
-		if dataStr != string(payload.suffix()) {
-			t.Error("Expected payload to be only terminating prefix.")
-		}
-	})
-
 	t.Run("error if building file", func(t *testing.T) {
 		path := "testdata/mygopherhole/art/laptop.txt"
 		resource, err := newResource(path)
@@ -168,5 +150,25 @@ func TestDirectoryPayload_build(t *testing.T) {
 			}
 		}
 
+	})
+
+	t.Run("build empty directory", func(t *testing.T) {
+		payload.mimeTypeIgnoreList = []string{"text/plain"}
+
+		path := "testdata/mygopherhole/art/subdirectory"
+		resource, err := newResource(path)
+		if err != nil {
+			t.Fatalf("Unexpected error %v", err)
+		}
+
+		data, err := payload.build(&resource)
+		if err != nil {
+			t.Fatalf("Unexpected error %v", err)
+		}
+
+		dataStr := string(*data)
+		if dataStr != string(payload.suffix()) {
+			t.Error("Expected payload to be only terminating prefix.")
+		}
 	})
 }

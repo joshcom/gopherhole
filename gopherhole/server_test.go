@@ -9,21 +9,6 @@ import (
 	"testing"
 )
 
-/*
-func TestServer_RunningServer(t *testing.T) {
-	config := NewConfiguration()
-	config.Host = "localhost"
-	config.Port = 3000
-	config.MaxConnections = 2
-	config.RootDirectory = "/home/joshcom/git/gopherhole/testdata/mygopherhole"
-	//config.LogFile = "/home/joshcom/gopherholelog"
-
-	server := NewServer(config)
-
-	server.Run()
-}
-*/
-
 func TestServer_Run(t *testing.T) {
 	listener, resetFunc := buildTestListener()
 	defer resetFunc()

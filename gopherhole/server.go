@@ -50,11 +50,17 @@ import (
 	"time"
 )
 
+const (
+	// The number of milliseconds to wait after connections
+	// max out to check for open slots.
+	POLL_CONN_MILLI = 50
+)
+
 type Server struct {
 	Configuration Configuration
 	Logger        *log.Logger
 	term          chan bool
-	mu            sync.Mutex
+	mu            *sync.Mutex
 	handlerCount  int
 }
 
@@ -62,6 +68,7 @@ func NewServer(config Configuration) (server Server) {
 	server = Server{Configuration: config}
 	server.term = make(chan bool)
 	server.handlerCount = 0
+	server.mu = new(sync.Mutex)
 
 	return server
 }
@@ -87,17 +94,19 @@ func (s *Server) Run() (err error) {
 
 	port := fmt.Sprintf(":%d", s.Configuration.Port)
 	ln, err := Listen("tcp", port)
-	defer ln.Close()
-
 	if err != nil {
 		log.Fatalf("Error listening to %s, %s", port, err)
 		return
 	}
+	defer ln.Close()
 
 ServerLoop:
 	for {
 		if s.handlersAtCapacity() {
-			// Idle until there's an opening.
+			select {
+			case <-time.After(POLL_CONN_MILLI * time.Millisecond):
+			}
+
 			continue
 		}
 
@@ -169,7 +178,6 @@ func (s *Server) handleConnection(c *net.Conn, logger *log.Logger) {
 		return
 	}
 
-	//fmt.Print(string(*request.payload))
 	num, err := (*c).Write(*request.payload)
 
 	if err != nil {
