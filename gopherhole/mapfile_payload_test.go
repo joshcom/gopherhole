@@ -6,7 +6,7 @@ import (
 )
 
 func TestMapfilePayload_build(t *testing.T) {
-	payload := new(mapfilePayload)
+	payload := newMapfilePayload("joshcom.net", 70, "testdata/mygopherhole")
 
 	t.Run("build response for file", func(t *testing.T) {
 		path := "testdata/mygopherhole/phlog/gophermap"
@@ -30,7 +30,7 @@ func TestMapfilePayload_build(t *testing.T) {
 		expectedRows := []string{
 			"ijoshcom.net - PHLOG\t(NOTHING)\tnohost\t0\r\n",
 			"i\t(NOTHING)\tnohost\t0\r\n",
-			"1^^Top of the gopherhole^^\t/",
+			"1^^Top of the gopherhole^^\t/\tjoshcom.net\t70\r\n",
 		}
 
 		for _, expected := range expectedRows {

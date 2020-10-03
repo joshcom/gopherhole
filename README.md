@@ -57,7 +57,12 @@ The supported mime types will vary by system.  The [mime](https://golang.org/pkg
 
 # Gopher Maps
 
-If a gopher map (specified by the `MapFileName` setting, defaulting to `gophermap`) is present in a directory.  This file is lightly processed, so that any line not detected have a <TAB> character will be presumed to be an inline-text line, and presented in the payload as such.
+If a gopher map (specified by the `MapFileName` setting, defaulting to `gophermap`) is present in a directory.  
+
+When you specify the path to a directory or resource, always use the full path in relation to the root of your gopherhole (not the root of your system).  For example, if the gopherhole on your system is `/var/gopherhole`, and the file you want to access is at `/var/gopherhole/phlog/myentry.txt`, your gophermap should reference the file as `/phlog/myentry.txt` no matter where the gopherhole is located (be it `/var/gopherhole/gophermap` or `/var/gopherohle/phlog/gophermap`).
+
+This file is lightly processed, so that any line not detected have a <TAB> character will be presumed to be an inline-text line, and presented in the payload as such.  Lines with a tab will be processed for completeness.  The server will attempt to append the hostname and/or port, if those columns
+are missing.
 
 In other words, a gophermap with the contents (where <TAB> represents a tab character):
 
@@ -72,12 +77,13 @@ Welcome to my gopherhole!
 ```
 iWelcome to my gopherhole!<TAB>(NOTHING)<TAB>nohost<TAB>0
 0About this gopherhole<TAB>about.txt
-1Phlog<TAB>phlog
+1Phlog<TAB>/phlog<TAB>yourhost.com<TAB>70
 ```
 
 The takeaway being:
 * You do not need to format your inline-text lines as inline-text entities.  This will be done for you.
 * Do not use the <TAB> character on inline-text lines (unless you've opted to format it yourself), or the previous bullet will not apply.
+* For local resources, feel free to omit the hostname and port tab columns.  Be sure these lines have only a single tab, and that it is between the name and the path.
 
 # Limitations
 
