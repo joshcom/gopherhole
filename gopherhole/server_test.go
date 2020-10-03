@@ -33,22 +33,6 @@ func TestServer_Run(t *testing.T) {
 	})
 }
 
-func TestServer_Terminate(t *testing.T) {
-	listener, resetFunc := buildTestListener()
-	defer resetFunc()
-
-	server := buildServer()
-	go func() { server.Run() }()
-	defer listener.Close()
-
-	server.Terminate()
-	num, err := listener.clientConn.Write([]byte("phlog/\r\n"))
-
-	if err == nil || num != 0 {
-		t.Errorf("Expected failed write to server after termination.")
-	}
-}
-
 func TestServer_HandleConnection(t *testing.T) {
 	listener := newStubListener()
 	logger := log.New(os.Stdout, "[test]", 0)

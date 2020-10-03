@@ -80,11 +80,6 @@ func NewServer(config Configuration) (server Server) {
 	return server
 }
 
-func (s *Server) Terminate() (err error) {
-	s.term <- true
-	return
-}
-
 func (s *Server) Run() (err error) {
 	f := os.Stdout
 	if s.Configuration.LogDisabled {
@@ -107,7 +102,6 @@ func (s *Server) Run() (err error) {
 	}
 	defer ln.Close()
 
-ServerLoop:
 	for {
 		if s.handlersAtCapacity() {
 			select {
@@ -116,21 +110,7 @@ ServerLoop:
 			}
 		}
 
-		var conn net.Conn
-		var ch = make(chan error)
-		go func(ln *net.Listener) {
-			conn, err = (*ln).Accept()
-			ch <- err
-		}(&ln)
-
-		select {
-		case err = <-ch:
-			// accept connection
-		case <-s.term:
-			log.Printf("Kill signal received.")
-			break ServerLoop
-		}
-
+		conn, err := ln.Accept()
 		logger := s.buildLogger(f)
 		if err != nil {
 			logger.Printf("Accept failure: %v", err)
