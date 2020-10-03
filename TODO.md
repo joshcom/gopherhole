@@ -4,4 +4,3 @@
 * Validate configuration before server starts.
 * Streaming writes, instead of loading the file in memory.
 * Additional mime-types file. (/etc/mime.types)
-* Use channel, instead of sleep, when connections max out.
