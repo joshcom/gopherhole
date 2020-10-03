@@ -1,10 +1,5 @@
 # TODO
-
-## Additional TODOs
-1. Update documentation
-2. Coverage report and CI
-
-## Future projects
+* CI
 * Additional resource checks: symlink detection and per-file path validation.
 * Validate configuration before server starts.
 * Streaming writes, instead of loading the file in memory.
