@@ -65,7 +65,7 @@ func TestPayload_buildInlineTextEntityRow(t *testing.T) {
 	expected := "iThis is the row\t(NOTHING)\tnohost\t0\r\n"
 
 	if string(*row) != expected {
-		t.Errorf("Unexpcted row format: \n%s", row)
+		t.Errorf("Unexpected row format: \n%s", row)
 	}
 }
 
@@ -85,7 +85,7 @@ func TestPayload_buildResourceEntityRow(t *testing.T) {
 		row := payload.buildResourceEntityRow(&res)
 		expected := "1art\ttestdata/mygopherhole/art\tjoshcom.net\t70\r\n"
 		if string(*row) != expected {
-			t.Errorf("Unexpcted row format: \n%s", row)
+			t.Errorf("Unexpeceted row format: \n%s", row)
 		}
 	})
 
@@ -98,7 +98,7 @@ func TestPayload_buildResourceEntityRow(t *testing.T) {
 		row := payload.buildResourceEntityRow(&res)
 		expected := "0laptop.txt\ttestdata/mygopherhole/art/laptop.txt\tjoshcom.net\t70\r\n"
 		if string(*row) != expected {
-			t.Errorf("Unexpcted row format: \n%s", row)
+			t.Errorf("Unexpected row format: \n%s", row)
 		}
 	})
 
@@ -111,7 +111,7 @@ func TestPayload_buildResourceEntityRow(t *testing.T) {
 		row := payload.buildResourceEntityRow(&res)
 		expected := "0gophermap"
 		if strings.Index(string(*row), expected) != 0 {
-			t.Errorf("Unexpcted row format: \n%s", row)
+			t.Errorf("Unexpected row format: \n%s", row)
 		}
 	})
 
@@ -132,8 +132,58 @@ func TestPayload_buildErrorEntityRow(t *testing.T) {
 	expected := "3File not found.\t(NOTHING)\tnohost\t0\r\n"
 
 	if string(*row) != expected {
-		t.Errorf("Unexpcted row format: \n%s", row)
+		t.Errorf("Unexpected row format: \n%s", row)
 	}
+}
+
+func TestPayload_correctEntityRow(t *testing.T) {
+	payload := payloadImpl{}
+
+	expected := "1Phlog\tphlog/\tjoshcom.net\t70\r\n"
+	host := "joshcom.net"
+	port := 70
+
+	t.Run("no correction for rows with less than two columns", func(t *testing.T) {
+		input := []byte("1Phlog\r\n")
+		row := payload.correctEntityRow(input, host, port)
+
+		if string(*row) != string(input) {
+			t.Errorf("Unexpected row format: \n%s", row)
+		}
+
+		input = []byte("\r\n")
+		row = payload.correctEntityRow(input, host, port)
+
+		if string(*row) != string(input) {
+			t.Errorf("Unexpected row format: \n%s", row)
+		}
+	})
+
+	t.Run("no correction for rows with four columns or more", func(t *testing.T) {
+		row := payload.correctEntityRow([]byte(expected), host, port)
+
+		if string(*row) != expected {
+			t.Errorf("Unexpected row format: \n%s", row)
+		}
+	})
+
+	t.Run("correct row with missing host and port", func(t *testing.T) {
+		input := []byte("1Phlog\tphlog/\r\n")
+		row := payload.correctEntityRow(input, host, port)
+
+		if string(*row) != expected {
+			t.Errorf("Unexpected row format: \n%s", row)
+		}
+	})
+
+	t.Run("correct row with missing port", func(t *testing.T) {
+		input := []byte("1Phlog\tphlog/\tjoshcom.net\r\n")
+		row := payload.correctEntityRow(input, host, port)
+
+		if string(*row) != expected {
+			t.Errorf("Unexpected row format: \n%s", row)
+		}
+	})
 }
 
 func TestPayload_buildEntityRow(t *testing.T) {
@@ -142,6 +192,19 @@ func TestPayload_buildEntityRow(t *testing.T) {
 	expected := "1Phlog\tphlog/\tjoshcom.net\t70\r\n"
 
 	if string(*row) != expected {
-		t.Errorf("Unexpcted row format: \n%s", row)
+		t.Errorf("Unexpected row format: \n%s", row)
+	}
+}
+
+func TestPayload_buildRow(t *testing.T) {
+	payload := payloadImpl{}
+	name := []byte("1Phlog")
+	path := []byte("phlog/")
+	host := []byte("joshcom.net")
+	row := payload.buildRow(&name, &path, &host, 70)
+	expected := "1Phlog\tphlog/\tjoshcom.net\t70\r\n"
+
+	if string(*row) != expected {
+		t.Errorf("Unexpected row format: \n%s", row)
 	}
 }

@@ -59,6 +59,7 @@ func (f *payloadImpl) isEntityRow(row *[]byte) bool {
 func (f *payloadImpl) buildInlineTextEntityRow(row []byte) *[]byte {
 	cleansedRow := string(row)
 	cleansedRow = strings.TrimSpace(cleansedRow)
+
 	newRow := f.buildEntityRow(InlineTextEntity, cleansedRow, NOPATH, NOHOST, NOPORT)
 	return newRow
 }
@@ -96,17 +97,52 @@ func (f *payloadImpl) buildErrorEntityRow(message string) *[]byte {
 	return row
 }
 
-func (f *payloadImpl) buildEntityRow(entity EntityType, name string, path string, host string, port int) *[]byte {
-	portCol := fmt.Sprintf("%d", port)
+func (f *payloadImpl) correctEntityRow(row []byte, host string, port int) *[]byte {
+	tabColumns := bytes.Split(row, []byte{TAB_CHAR})
 
-	row := []byte{byte(entity)}
-	row = append(row, []byte(name)...)
+	// If this row already has 4 or more columns, it's as correct as its
+	// gonna get.
+	// If there's not at least a name and a path, we won't apply the
+	// local host and port, and leave luck to heaven.
+	if len(tabColumns) < 2 || len(tabColumns) >= 4 {
+		return &row
+	}
+
+	// If this row already has a host specified, use that.
+	var hostCol []byte
+	if len(tabColumns) > 2 {
+		hostCol = bytes.TrimSpace(tabColumns[2])
+	} else {
+		hostCol = []byte(host)
+	}
+
+	name := bytes.TrimSpace(tabColumns[0])
+	path := bytes.TrimSpace(tabColumns[1])
+
+	return f.buildRow(&name, &path, &hostCol, port)
+}
+
+func (f *payloadImpl) buildEntityRow(entity EntityType, name string, path string, host string, port int) *[]byte {
+	entityName := []byte{byte(entity)}
+	entityName = append(entityName, []byte(name)...)
+
+	pathCol := []byte(path)
+	hostCol := []byte(host)
+	return f.buildRow(&entityName, &pathCol, &hostCol, port)
+}
+
+func (f *payloadImpl) buildRow(entityName *[]byte, path *[]byte, host *[]byte, port int) *[]byte {
+	p := fmt.Sprintf("%d", port)
+	portCol := []byte(p)
+
+	row := []byte{}
+	row = append(row, *entityName...)
 	row = append(row, TAB_CHAR)
-	row = append(row, []byte(path)...)
+	row = append(row, *path...)
 	row = append(row, TAB_CHAR)
-	row = append(row, []byte(host)...)
+	row = append(row, *host...)
 	row = append(row, TAB_CHAR)
-	row = append(row, []byte(portCol)...)
+	row = append(row, portCol...)
 	row = append(row, CR_CHAR, LF_CHAR)
 	return &row
 }

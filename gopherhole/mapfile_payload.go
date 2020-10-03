@@ -29,11 +29,11 @@ func (f *mapfilePayload) build(r *resource) (res *[]byte, err error) {
 	lines := bytes.Split(*fileData, []byte{LF_CHAR})
 	var newLines []byte
 	for _, line := range lines {
-		line := line
+		line := bytes.TrimSpace(line)
 		if !f.isEntityRow(&line) {
 			line = *f.buildInlineTextEntityRow(line)
 		} else {
-			line = append(line, LF_CHAR)
+			line = *f.correctEntityRow(line, f.host, f.port)
 		}
 		newLines = append(newLines, line...)
 	}
