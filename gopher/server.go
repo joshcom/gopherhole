@@ -51,22 +51,29 @@ import (
 )
 
 const (
-	// The number of milliseconds to wait after connections
-	// max out to check for open slots.
-	POLL_CONN_MILLI = 50
+	CONNECTION_FREED_BUFFER_SIZE = 10
 )
 
 type Server struct {
 	Configuration Configuration
 	Logger        *log.Logger
-	term          chan bool
-	mu            *sync.Mutex
 	handlerCount  int
+
+	// If a message is sent to this channel, the server terminates.
+	term chan bool
+
+	// When the connection limit is reached, this channel will recieve
+	// a message when a connection is freed.
+	free chan bool
+
+	// Connection counter mutex.
+	mu *sync.Mutex
 }
 
 func NewServer(config Configuration) (server Server) {
 	server = Server{Configuration: config}
 	server.term = make(chan bool)
+	server.free = make(chan bool, CONNECTION_FREED_BUFFER_SIZE)
 	server.handlerCount = 0
 	server.mu = new(sync.Mutex)
 
@@ -104,10 +111,9 @@ ServerLoop:
 	for {
 		if s.handlersAtCapacity() {
 			select {
-			case <-time.After(POLL_CONN_MILLI * time.Millisecond):
+			case <-s.free:
+				continue
 			}
-
-			continue
 		}
 
 		var conn net.Conn
@@ -201,7 +207,12 @@ func (s *Server) incrementHandlerCounter() {
 
 func (s *Server) decrementHandlerCounter() {
 	s.mu.Lock()
-	s.handlerCount -= 1
+	if s.handlersAtCapacity() {
+		s.handlerCount -= 1
+		s.free <- true
+	} else {
+		s.handlerCount -= 1
+	}
 	s.mu.Unlock()
 }
 
