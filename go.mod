@@ -1,3 +1,3 @@
-module gitlab.com/joshcom/gopherhole
+module github.com/joshcom/gopherhole
 
 go 1.13
