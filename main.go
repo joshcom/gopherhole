@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	gopher "github.com/joshcom/gopherhole/gopher"
+	"github.com/joshcom/gopherhole/gopherhole"
 	"log"
 )
 
@@ -28,20 +28,20 @@ func main() {
 	}
 
 	config := buildConfig()
-	server := gopher.NewServer(config)
+	server := gopherhole.NewServer(config)
 	server.Run()
 }
 
-func buildConfig() (config gopher.Configuration) {
+func buildConfig() (config gopherhole.Configuration) {
 	var err error
 
 	if *configfile != "" {
-		config, err = gopher.NewConfigurationFromFile(*configfile)
+		config, err = gopherhole.NewConfigurationFromFile(*configfile)
 		if err != nil {
 			log.Fatalf("Failed to open configuration file '%s.", *configfile)
 		}
 	} else {
-		config = gopher.NewConfiguration()
+		config = gopherhole.NewConfiguration()
 	}
 
 	if *root != "" {
