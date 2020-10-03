@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"gitlab.com/joshcom/gopherhole/gopherhole"
+	"github.com/joshcom/gopherhole/gopherhole"
 	"log"
 )
 
