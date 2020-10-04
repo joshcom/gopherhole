@@ -94,7 +94,7 @@ Welcome to my gopherhole!
 
 ```
 iWelcome to my gopherhole!<TAB>(NOTHING)<TAB>nohost<TAB>0
-0About this gopherhole<TAB>about.txt
+0About this gopherhole<TAB>about.txt<TAB>yourhost.com<TAB>70
 1Phlog<TAB>/phlog<TAB>yourhost.com<TAB>70
 ```
 
