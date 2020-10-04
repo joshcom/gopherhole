@@ -95,7 +95,7 @@ func TestDirectoryPayload_build(t *testing.T) {
 		}
 
 		dataStr := string(*data)
-		if strings.Index(dataStr, "020200919-Coding-on-a-long-weekend.phlog") < 0 {
+		if strings.Index(dataStr, "20200908-Its-A-Post.phlog") < 0 {
 			t.Error("Expected default mime type to be applied.")
 		}
 	})
