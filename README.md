@@ -1,5 +1,7 @@
 # gopherhole
 
+A gopher server.
+
 # Usage
 
 ```
