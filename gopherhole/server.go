@@ -123,8 +123,6 @@ func (s *Server) Run() (err error) {
 			go s.handleConnection(&conn, logger)
 		}
 	}
-
-	return
 }
 
 func (s *Server) handleConnection(c *net.Conn, logger *log.Logger) {
