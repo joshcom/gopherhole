@@ -1,9 +1,12 @@
 package gopherhole
 
+import (
+	"io"
+)
+
 type request struct {
 	configuration Configuration
 	selector      selector
-	payload       *[]byte
 }
 
 func newRequest(query string, config Configuration) (req request) {
@@ -16,7 +19,7 @@ func newRequest(query string, config Configuration) (req request) {
 	return req
 }
 
-func (r *request) process() (err error) {
+func (r *request) process(conn *io.Writer) (written int64, err error) {
 	fullPath, err := r.selector.path()
 	var res resource
 
@@ -28,19 +31,19 @@ func (r *request) process() (err error) {
 		res, _ = newResource(fullPath)
 	}
 
-	r.payload, err = r.getPayload(&res)
+	written, err = r.writePayload(conn, &res)
 
 	// Errors here mean the selector was constructed
 	// fine, but the file itself is forbidden.
 	if err != nil {
 		res, _ = newNotFoundErrorResource(r.selector.query)
-		r.payload, err = r.getPayload(&res)
+		written, err = r.writePayload(conn, &res)
 	}
 
 	return
 }
 
-func (r *request) getPayload(res *resource) (payload *[]byte, err error) {
+func (r *request) writePayload(conn *io.Writer, res *resource) (written int64, err error) {
 	conf := r.configuration
 	resp := response{
 		host:               conf.Host,
@@ -50,5 +53,6 @@ func (r *request) getPayload(res *resource) (payload *[]byte, err error) {
 		defaultMime:        conf.DefaultMimeType,
 		mimeTypeIgnoreList: conf.MimeTypeIgnoreList,
 	}
-	return resp.build(res)
+
+	return resp.write(conn, res)
 }

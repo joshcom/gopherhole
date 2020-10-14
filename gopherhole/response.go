@@ -1,5 +1,9 @@
 package gopherhole
 
+import (
+	"io"
+)
+
 type response struct {
 	host               string
 	port               int
@@ -9,7 +13,7 @@ type response struct {
 	mimeTypeIgnoreList []string
 }
 
-func (r *response) build(res *resource) (pay *[]byte, err error) {
+func (r *response) write(conn *io.Writer, res *resource) (written int64, err error) {
 	payloadRes := *res
 	var p payload
 
@@ -18,7 +22,7 @@ func (r *response) build(res *resource) (pay *[]byte, err error) {
 	} else if res.isDirectory {
 		dirResources, err := res.directoryResources()
 		if err != nil {
-			return pay, err
+			return written, err
 		}
 		mapfile := r.findMapFile(&dirResources)
 		if mapfile != nil {
@@ -41,7 +45,14 @@ func (r *response) build(res *resource) (pay *[]byte, err error) {
 		p = newFilePayload(r.defaultMime, r.mimeTypeIgnoreList)
 	}
 
-	pay, err = p.build(&payloadRes)
+	reader, err := p.build(&payloadRes)
+	if err != nil {
+		return
+	}
+
+	defer (*reader).Close()
+	written, err = io.Copy(*conn, *reader)
+
 	return
 }
 

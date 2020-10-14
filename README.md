@@ -104,7 +104,3 @@ The takeaway being:
 * You do not need to format your inline-text lines as inline-text entities.  This will be done for you.
 * Do not use the <TAB> character on inline-text lines (unless you've opted to format it yourself), or the previous bullet will not apply.
 * For local resources, feel free to omit the hostname and port tab columns.  Be sure these lines have only a single tab, and that it is between the name and the path.
-
-# Limitations
-
-Currently, when files are served, they are loaded fully into memory, and then sent to the client.  They are not streamed.  (I intend to change this in the future.)

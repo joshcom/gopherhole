@@ -27,11 +27,11 @@ func newDirectoryPayload(host string,
 	return &p
 }
 
-func (f *directoryPayload) build(r *resource) (*[]byte, error) {
+func (f *directoryPayload) build(r *resource) (*payloadReader, error) {
 	res := new([]byte)
 	directoryResources, err := r.directoryResources()
 	if err != nil {
-		return res, err
+		return nil, err
 	}
 
 	sort.Slice(directoryResources, func(a, b int) bool {
@@ -47,5 +47,7 @@ func (f *directoryPayload) build(r *resource) (*[]byte, error) {
 	}
 
 	res = f.pack(res)
-	return res, err
+
+	var reader payloadReader = newPayloadBytesReader(res)
+	return &reader, err
 }

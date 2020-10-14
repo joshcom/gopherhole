@@ -65,6 +65,14 @@ func newResource(absPath string) (res resource, err error) {
 	return
 }
 
+func (r *resource) file() (f *os.File, err error) {
+	if r.isDirectory {
+		return nil, fmt.Errorf("'%s' is a directory.", r.path)
+	}
+
+	return os.Open(r.path)
+}
+
 func (r *resource) readFileData() (data *[]byte, err error) {
 	if r.isDirectory {
 		return nil, fmt.Errorf("'%s' is a directory.", r.path)

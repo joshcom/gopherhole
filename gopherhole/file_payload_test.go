@@ -1,9 +1,30 @@
 package gopherhole
 
 import (
+	"os"
 	"strings"
 	"testing"
 )
+
+func TestPayloadFilePayload_payloadFileReader(t *testing.T) {
+	file, err := os.Open("testdata/mygopherhole/art/laptop.txt")
+	if err != nil {
+		t.Fatalf("Error opening file: %v", err)
+	}
+
+	defer file.Close()
+	reader := newPayloadFileReader(file)
+
+	res := readAllString(reader)
+	if strings.Index(res, "vim") < 0 {
+		t.Errorf("Error reading file.")
+	}
+
+	err = reader.Close()
+	if err != nil {
+		t.Errorf("Error closing file reader: %v", err)
+	}
+}
 
 func TestFilePayload_BuildResponse(t *testing.T) {
 	pay := newFilePayload("text/plain", []string{"text/html"})
@@ -15,12 +36,12 @@ func TestFilePayload_BuildResponse(t *testing.T) {
 			t.Fatalf("Unexpected error %v", err)
 		}
 
-		data, err := pay.build(&res)
+		reader, err := pay.build(&res)
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
 		}
 
-		dataStr := string(*data)
+		dataStr := readAllString(*reader)
 		if strings.Index(dataStr, "about.txt") < 0 {
 			t.Error("Payload data not as expected.")
 		}
@@ -37,12 +58,12 @@ func TestFilePayload_BuildResponse(t *testing.T) {
 			t.Fatalf("Unexpected error %v", err)
 		}
 
-		data, err := pay.build(&res)
+		reader, err := pay.build(&res)
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
 		}
 
-		dataStr := string(*data)
+		dataStr := readAllString(*reader)
 		if dataStr != "" {
 			t.Error("Expected empty data string.")
 		}
