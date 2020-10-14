@@ -20,10 +20,10 @@ func newMapfilePayload(host string, port int, rootdir string) *mapfilePayload {
 	return &p
 }
 
-func (f *mapfilePayload) build(r *resource) (res *[]byte, err error) {
+func (f *mapfilePayload) build(r *resource) (*payloadReader, error) {
 	fileData, err := r.readFileData()
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	lines := bytes.Split(*fileData, []byte{LF_CHAR})
@@ -38,6 +38,8 @@ func (f *mapfilePayload) build(r *resource) (res *[]byte, err error) {
 		newLines = append(newLines, line...)
 	}
 
-	res = f.pack(&newLines)
-	return
+	res := f.pack(&newLines)
+
+	var reader payloadReader = newPayloadBytesReader(res)
+	return &reader, err
 }

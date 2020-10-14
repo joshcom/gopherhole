@@ -95,6 +95,37 @@ func TestResource_newQueryErrorResource(t *testing.T) {
 	}
 }
 
+func TestResource_file(t *testing.T) {
+	t.Run("file data", func(t *testing.T) {
+		res, err := newResource("testdata/mygopherhole/art/laptop.txt")
+		if err != nil {
+			t.Fatalf("Unexpected error %v", err)
+		}
+
+		file, err := res.file()
+		if err != nil {
+			t.Fatalf("Unexpected error %v", err)
+		}
+
+		dataStr := readAllString(file)
+		if strings.Index(dataStr, "$ vim") < 0 {
+			t.Error("File not loaded correctly.")
+		}
+	})
+
+	t.Run("cannot open directories", func(t *testing.T) {
+		res, err := newResource("testdata/mygopherhole/art")
+		if err != nil {
+			t.Fatalf("Unexpected error %v", err)
+		}
+
+		_, err = res.file()
+		if err == nil {
+			t.Error("Expected error when calling readFileData on directory")
+		}
+	})
+}
+
 func TestResource_readFileData(t *testing.T) {
 	t.Run("read file data", func(t *testing.T) {
 		res, err := newResource("testdata/mygopherhole/art/laptop.txt")

@@ -38,12 +38,12 @@ func TestDirectoryPayload_build(t *testing.T) {
 		t.Fatalf("Unexpected error %v", err)
 	}
 
-	data, err := payload.build(&resource)
+	reader, err := payload.build(&resource)
 	if err != nil {
 		t.Fatalf("Unexpected error %v", err)
 	}
 
-	dataStr := string(*data)
+	dataStr := readAllString(*reader)
 
 	t.Run("order directory response", func(t *testing.T) {
 		fileOrder := []string{
@@ -89,12 +89,12 @@ func TestDirectoryPayload_build(t *testing.T) {
 			t.Fatalf("Unexpected error %v", err)
 		}
 
-		data, err := payload.build(&resource)
+		reader, err := payload.build(&resource)
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
 		}
 
-		dataStr := string(*data)
+		dataStr := readAllString(*reader)
 		if strings.Index(dataStr, "20200908-Its-A-Post.phlog") < 0 {
 			t.Error("Expected default mime type to be applied.")
 		}
@@ -120,8 +120,8 @@ func TestDirectoryPayload_build(t *testing.T) {
 			t.Fatalf("Unexpected error %v", err)
 		}
 
-		data, err = payload.build(&resource)
-		dataStr := string(*data)
+		reader, err = payload.build(&resource)
+		dataStr := readAllString(*reader)
 		if err != nil {
 			t.Fatalf("Error when building payload")
 		}
@@ -137,8 +137,8 @@ func TestDirectoryPayload_build(t *testing.T) {
 		}
 
 		payload.mimeTypeIgnoreList = []string{"text/html", "application/"}
-		data, err = payload.build(&resource)
-		dataStr = string(*data)
+		reader, err = payload.build(&resource)
+		dataStr = readAllString(*reader)
 
 		if strings.Index(dataStr, gifExpected) < 0 {
 			t.Errorf("Expected to find '%s' in payload", gifExpected)
@@ -161,12 +161,12 @@ func TestDirectoryPayload_build(t *testing.T) {
 			t.Fatalf("Unexpected error %v", err)
 		}
 
-		data, err := payload.build(&resource)
+		reader, err := payload.build(&resource)
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
 		}
 
-		dataStr := string(*data)
+		dataStr := readAllString(*reader)
 		if dataStr != string(payload.suffix()) {
 			t.Error("Expected payload to be only terminating prefix.")
 		}

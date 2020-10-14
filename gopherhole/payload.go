@@ -17,9 +17,15 @@ const (
 )
 
 type payload interface {
-	build(*resource) (*[]byte, error)
+	build(*resource) (*payloadReader, error)
 	pack(*[]byte) *[]byte
 	suffix() []byte
+}
+
+// Implements io.Closer and io.Reader
+type payloadReader interface {
+	Close() error
+	Read(p []byte) (n int, err error)
 }
 
 type payloadImpl struct {
@@ -30,7 +36,7 @@ type payloadImpl struct {
 	mimeTypeIgnoreList []string
 }
 
-func (r *payloadImpl) build(resource *resource) (p *[]byte, err error) {
+func (r *payloadImpl) build(resource *resource) (reader *payloadReader, err error) {
 	return
 }
 
@@ -145,4 +151,25 @@ func (f *payloadImpl) buildRow(entityName *[]byte, path *[]byte, host *[]byte, p
 	row = append(row, portCol...)
 	row = append(row, CR_CHAR, LF_CHAR)
 	return &row
+}
+
+// Implements payloadReader
+type payloadBytesReader struct {
+	reader *bytes.Reader
+}
+
+func newPayloadBytesReader(data *[]byte) *payloadBytesReader {
+	reader := bytes.NewReader(*data)
+
+	return &payloadBytesReader{
+		reader: reader,
+	}
+}
+
+func (r *payloadBytesReader) Close() (err error) {
+	return
+}
+
+func (r *payloadBytesReader) Read(p []byte) (n int, err error) {
+	return r.reader.Read(p)
 }

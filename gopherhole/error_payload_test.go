@@ -11,12 +11,12 @@ func TestErrorPayload_build(t *testing.T) {
 	t.Run("build error", func(t *testing.T) {
 		resource, _ := newQueryErrorResource("/fakepath")
 
-		data, err := payload.build(&resource)
+		reader, err := payload.build(&resource)
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
 		}
 
-		dataStr := string(*data)
+		dataStr := readAllString(*reader)
 		formatedLine := "3Invalid query: /fakepath\t(NOTHING)\tnohost\t0\r\n"
 
 		if strings.Index(dataStr, formatedLine) == -1 {

@@ -41,6 +41,7 @@ package gopherhole
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -156,16 +157,11 @@ func (s *Server) handleConnection(c *net.Conn, logger *log.Logger) {
 	logger.Printf("Query: %s", clientData)
 	request := newRequest(clientData, s.Configuration)
 
-	err = request.process()
+	writer := io.Writer(*c)
+	num, err := request.process(&writer)
 	if err != nil {
 		logger.Printf("Failed to process request:\n%v", err)
 		return
-	}
-
-	num, err := (*c).Write(*request.payload)
-
-	if err != nil {
-		logger.Printf("Error writing data to client:\n%v", err)
 	}
 
 	logger.Printf("Sent %d bytes.", num)

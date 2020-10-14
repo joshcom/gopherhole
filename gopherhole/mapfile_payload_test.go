@@ -15,12 +15,12 @@ func TestMapfilePayload_build(t *testing.T) {
 			t.Fatalf("Unexpected error %v", err)
 		}
 
-		data, err := payload.build(&resource)
+		reader, err := payload.build(&resource)
 		if err != nil {
 			t.Fatalf("Unexpected error %v", err)
 		}
 
-		dataStr := string(*data)
+		dataStr := readAllString(*reader)
 
 		if !strings.HasSuffix(dataStr, string(payload.suffix())) {
 			t.Error("Terminating suffix should be applied to mapfiles.")

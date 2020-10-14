@@ -9,8 +9,10 @@ func newErrorPayload() *errorPayload {
 	return &p
 }
 
-func (f *errorPayload) build(r *resource) (res *[]byte, err error) {
+func (f *errorPayload) build(r *resource) (*payloadReader, error) {
 	row := f.buildResourceEntityRow(r)
-	res = f.pack(row)
-	return
+	res := f.pack(row)
+
+	var reader payloadReader = newPayloadBytesReader(res)
+	return &reader, nil
 }

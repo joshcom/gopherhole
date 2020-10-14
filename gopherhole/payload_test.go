@@ -208,3 +208,27 @@ func TestPayload_buildRow(t *testing.T) {
 		t.Errorf("Unexpected row format: \n%s", row)
 	}
 }
+
+func TestPayloadBytesReader_newPayloadBytesReader(t *testing.T) {
+	data := []byte("1Phlog")
+	reader := newPayloadBytesReader(&data)
+
+	res := readAllString(reader.reader)
+	if string(data) != res {
+		t.Errorf("Expected to read '%s', but read '%s'",
+			string(data),
+			res)
+	}
+}
+
+func TestPayloadBytesReader_Read(t *testing.T) {
+	data := []byte("1Phlog")
+	reader := newPayloadBytesReader(&data)
+
+	res := readAllString(reader)
+	if string(data) != res {
+		t.Errorf("Expected to read '%s', but read '%s'",
+			string(data),
+			res)
+	}
+}
